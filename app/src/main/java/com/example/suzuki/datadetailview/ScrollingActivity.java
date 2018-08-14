@@ -17,10 +17,32 @@ import android.widget.TextView;
 
 public class ScrollingActivity extends AppCompatActivity {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scrolling);
+    private void addData2View(TownData townData){
+        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.linear);
+
+        int margin_size = 10;
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(margin_size, margin_size, margin_size, 0);
+
+        int padding_size = 20;
+
+        TextView data_text = new TextView(this);
+        LinearLayout vert_linear = new LinearLayout(this);
+        vert_linear.setOrientation(LinearLayout.HORIZONTAL);
+        vert_linear.setBackground(getDrawable(R.drawable.fradme_style));
+        vert_linear.setPadding(padding_size, padding_size, padding_size, padding_size);
+        vert_linear.setLayoutParams(layoutParams);
+        vert_linear.setGravity(Gravity.CENTER);
+
+        data_text.setText(townData.getData_name_() + " : " + townData.getData_val_());
+        data_text.setTextSize(32);
+        data_text.setGravity(Gravity.CENTER);
+
+        vert_linear.addView(data_text);
+        linearLayout.addView(vert_linear);
+    }
+
+    private void createDataView(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         // 市区町村名を入れる
@@ -35,58 +57,31 @@ public class ScrollingActivity extends AppCompatActivity {
 
         getWindow().setExitTransition(new Slide());
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setContentView(R.layout.test);
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                 //       .setAction("Action", null).show();
-            }
-        });
-
         /*
-          Data detail_data
+          Data setting
          */
-        String data_title[] = {"平均気温", "人口", "人口密度", "NO DATA", "NO DATA", "NO DATA", "NO DATA", "NO DATA", "NO DATA", "NO DATA"};
-
-        String pre_data[] = new String[10];
-
-        pre_data[0] = String.valueOf(16.7) + "℃";
-        pre_data[1] = String.valueOf(1527481) + "人";
-        pre_data[2] = String.valueOf(2742) + "人/㎢";
-        for (int i=3; i < pre_data.length; i++){
-            pre_data[i] = "NO DATA";
+        TownData datas[] = new TownData[10];
+        for(int i=0; i < datas.length; i++){
+            datas[i] = new TownData();
         }
+        datas[0].setData_name_("平均気温");
+        datas[1].setData_name_("人口");
+        datas[2].setData_name_("人口密度");
 
+        datas[0].setData_val_(String.valueOf(16.7) + "℃");
+        datas[1].setData_val_(String.valueOf(1527481) + "人");
+        datas[2].setData_val_(String.valueOf(2742) + "人/㎢");
 
-        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.linear);
-
-        int margin_size = 10;
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(margin_size, margin_size, margin_size, 0);
-
-        int padding_size = 20;
-
-        for(int i = 0; i < data_title.length; i++){
-            if (i == data_title.length - 1){
-                layoutParams.setMargins(margin_size, margin_size, margin_size, margin_size);
-            }
-            TextView data_text = new TextView(this);
-            LinearLayout vert_linear = new LinearLayout(this);
-            vert_linear.setOrientation(LinearLayout.HORIZONTAL);
-            vert_linear.setBackground(getDrawable(R.drawable.fradme_style));
-            vert_linear.setPadding(padding_size, padding_size, padding_size, padding_size);
-            vert_linear.setLayoutParams(layoutParams);
-            vert_linear.setGravity(Gravity.CENTER);
-
-            data_text.setText(data_title[i] +" : " + pre_data[i]);
-            data_text.setTextSize(32);
-            data_text.setGravity(Gravity.CENTER);
-
-            vert_linear.addView(data_text);
-            linearLayout.addView(vert_linear);
+        // add data to view list
+        for(TownData townData: datas){
+            addData2View(townData);
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setScreenMain();
     }
 
     @Override
@@ -94,6 +89,31 @@ public class ScrollingActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_scrolling, menu);
         return true;
+    }
+
+    private void setScreenMain() {
+        setContentView(R.layout.activity_scrolling);
+        createDataView();
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setScreenSub();
+            }
+        });
+    }
+
+    private void setScreenSub(){
+        setContentView(R.layout.test);
+
+        Button senniButton = findViewById(R.id.seni);
+        senniButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setScreenMain();
+            }
+        });
     }
 
     @Override
