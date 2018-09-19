@@ -53,7 +53,7 @@ public class ScrollingActivity extends AppCompatActivity {
         String title_str = "神戸";
         toolbar.setTitle(title_str);
 
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
 
         getWindow().setExitTransition(new Slide());
 
