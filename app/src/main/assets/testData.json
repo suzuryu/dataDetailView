@@ -1,0 +1,9 @@
+{
+  "school":{
+    "hogeschool":{
+      "name": "hogehighschool",
+      "city": "hogecity",
+      "state": "hugaken"
+    }
+  }
+}

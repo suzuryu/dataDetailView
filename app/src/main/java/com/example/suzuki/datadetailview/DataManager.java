@@ -14,18 +14,16 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-public class DataManager extends Activity {
+public class DataManager extends Activity{
+    private String textData;
+    private String PACKAGE_NAME = "com.example.suzuki.datadetailview/";
 
-    public FileOutputStream getLocalOutputFileStream(String fileName){
-        try {
-            return openFileOutput(fileName, Context.MODE_PRIVATE);
-        }catch (FileNotFoundException e){
-            e.printStackTrace();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+    DataManager(){
+        this.textData = "TEST";
+    }
 
-        return null;
+    public String convertFileName(String fileNameOrigin){
+        return "/data/data/" + PACKAGE_NAME  + fileNameOrigin;
     }
 
     public FileInputStream getLocalInputFileStream(String fileName){
@@ -41,10 +39,10 @@ public class DataManager extends Activity {
     }
 
     public void writeToFile(String fileName, String text) {
-        try {
-            FileOutputStream outputStream = getLocalOutputFileStream(fileName);
-
+        fileName = convertFileName(fileName);
+        try (FileOutputStream outputStream = openFileOutput(fileName, Context.MODE_PRIVATE)){
             outputStream.write(text.getBytes());
+            outputStream.flush();
             outputStream.close();
         }catch(IOException e){
             e.printStackTrace();
@@ -53,8 +51,9 @@ public class DataManager extends Activity {
         }
     }
 
-    public ArrayList<String> readFromFile(String fileName, String text) {
+    public ArrayList<String> readFromFile(String fileName) {
         try {
+            fileName = convertFileName(fileName);
             FileInputStream inputStream = getLocalInputFileStream(fileName);
             BufferedReader bfReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
 
@@ -76,5 +75,7 @@ public class DataManager extends Activity {
         return new ArrayList<String>();
     }
 
-
+    public String getTextData(){
+        return this.textData;
+    }
 }
