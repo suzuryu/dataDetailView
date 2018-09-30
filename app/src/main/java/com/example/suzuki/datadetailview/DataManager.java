@@ -14,12 +14,13 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-public class DataManager extends Activity{
+public class DataManager{
     private String textData;
     private String PACKAGE_NAME = "com.example.suzuki.datadetailview/";
-
-    DataManager(){
+    private Context context;
+    DataManager(Context context){
         this.textData = "TEST";
+        this.context = context;
     }
 
     public String convertFileName(String fileNameOrigin){
@@ -28,7 +29,7 @@ public class DataManager extends Activity{
 
     public FileInputStream getLocalInputFileStream(String fileName){
         try{
-            return openFileInput(fileName);
+            return context.openFileInput(fileName);
         }catch (FileNotFoundException e){
             e.printStackTrace();
         }catch (IOException e){
@@ -39,8 +40,7 @@ public class DataManager extends Activity{
     }
 
     public void writeToFile(String fileName, String text) {
-        fileName = convertFileName(fileName);
-        try (FileOutputStream outputStream = openFileOutput(fileName, Context.MODE_PRIVATE)){
+        try (FileOutputStream outputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE)){
             outputStream.write(text.getBytes());
             outputStream.flush();
             outputStream.close();
@@ -53,7 +53,6 @@ public class DataManager extends Activity{
 
     public ArrayList<String> readFromFile(String fileName) {
         try {
-            fileName = convertFileName(fileName);
             FileInputStream inputStream = getLocalInputFileStream(fileName);
             BufferedReader bfReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
 

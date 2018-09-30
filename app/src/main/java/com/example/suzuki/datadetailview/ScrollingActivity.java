@@ -108,12 +108,11 @@ public class ScrollingActivity extends AppCompatActivity {
             }
         });
     }
-
     private void setScreenSub(){
         setContentView(R.layout.test);
 
         Button senniButton = findViewById(R.id.seni);
-        DataManager textDataManager = new DataManager();
+        DataManager textDataManager = new DataManager(this);
         textDataManager.writeToFile("test.txt", textDataManager.getTextData());
         ArrayList<String> fileData = textDataManager.readFromFile("test.txt");
         String data = "";
