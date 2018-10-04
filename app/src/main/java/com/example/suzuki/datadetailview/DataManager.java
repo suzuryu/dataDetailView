@@ -18,6 +18,7 @@ public class DataManager{
     private String textData;
     private String PACKAGE_NAME = "com.example.suzuki.datadetailview/";
     private Context context;
+
     DataManager(Context context){
         this.textData = "TEST";
         this.context = context;
@@ -30,8 +31,6 @@ public class DataManager{
     public FileInputStream getLocalInputFileStream(String fileName){
         try{
             return context.openFileInput(fileName);
-        }catch (FileNotFoundException e){
-            e.printStackTrace();
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -45,8 +44,6 @@ public class DataManager{
             outputStream.flush();
             outputStream.close();
         }catch(IOException e){
-            e.printStackTrace();
-        }catch (NullPointerException e){
             e.printStackTrace();
         }
     }
