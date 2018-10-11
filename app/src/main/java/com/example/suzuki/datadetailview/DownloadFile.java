@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static android.content.ContentValues.TAG;
+import static android.provider.ContactsContract.Directory.PACKAGE_NAME;
 
 public class DownloadFile extends AsyncTask<String, String, String> {
     private ProgressDialog progressDialog;
@@ -58,16 +60,15 @@ public class DownloadFile extends AsyncTask<String, String, String> {
 
             int lengthOfFile = connection.getContentLength();
             InputStream input = new BufferedInputStream(url.openStream(), 8192);
-            String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
 
             //Extract file name from URL
             fileName = f_url[0].substring(f_url[0].lastIndexOf('/') + 1, f_url[0].length());
 
-            //Append timestamp to file name
-            fileName = timestamp + "_" + fileName;
-
+            this.dataManager.addFileName(fileName);
             //External directory path to save file
-            folder = Environment.getExternalStorageDirectory() + File.separator + "androiddeft/";
+            // folder = Environment.getExternalStorageDirectory() + File.separator + "androiddeft/";
+            // folder = "/data/data/com.example.suzuki.datadetailview/" + File.separator + "androiddeft/";
+            folder = this.mainActivity.getFilesDir().getPath() + File.separator + "androiddeft/";
 
             //Create androiddeft folder if it does not exist
             File directory = new File(folder);
@@ -77,7 +78,7 @@ public class DownloadFile extends AsyncTask<String, String, String> {
             }
 
             // Output stream to write file
-            OutputStream output = new FileOutputStream(folder + fileName);
+            OutputStream output = new  FileOutputStream(folder + fileName);
 
             byte data[] = new byte[1024];
 
@@ -88,7 +89,7 @@ public class DownloadFile extends AsyncTask<String, String, String> {
 //                 publishing the progress....
 //                 After this onProgressUpdate will be called
                 publishProgress("" + (int) ((total * 100) / lengthOfFile));
-                Log.d(TAG, "Progress: " + (int) ((total * 100) / lengthOfFile));
+               // Log.d(TAG, "Progress: " + (int) ((total * 100) / lengthOfFile));
 
                 // writing data to file
                 output.write(data, 0, count);

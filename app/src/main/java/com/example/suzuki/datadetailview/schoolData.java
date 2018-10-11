@@ -1,31 +1,25 @@
 package com.example.suzuki.datadetailview;
 
 public class schoolData {
+
     private String name;
-    private String city_name;
-    private String state_name;
+    private int peopleNum;
 
-    public String getCity_name() {
-        return city_name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getState_name() {
-        return state_name;
-    }
-
-    public void setName(String name) {
+    schoolData(String name, int peopleName){
         this.name = name;
+        this.peopleNum = peopleNum;
+    }
+    // public void setSchoolData(String name, int peopleNum){
+    //   this.name = name;
+    //   this.peopleNum = peopleNum;
+    // }
+
+    public String getName(){
+        return this.name;
     }
 
-    public void setCity_name(String city_name) {
-        this.city_name = city_name;
+    public int getPeopleNum(){
+        return this.peopleNum;
     }
 
-    public void setState_name(String state_name) {
-        this.state_name = state_name;
-    }
 }

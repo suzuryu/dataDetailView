@@ -1,10 +1,7 @@
 package com.example.suzuki.datadetailview;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.transition.Slide;
@@ -14,11 +11,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -90,12 +84,20 @@ public class ScrollingActivity extends AppCompatActivity {
     private void downloadData() {
         try {
             String url = "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000031543954&fileKind=0";
-            //Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            //Intent browserIntent =
             //startActivity(browserIntent);
             new DownloadFile(this, this.dataManager).execute(url);
+
+            for(String name: this.dataManager.getFileNames()){
+                Log.d("name", name);
+            }
+
+            ReadSchoolData readSchoolData = new ReadSchoolData(this.dataManager);
+
         }catch (Exception e){
             e.printStackTrace();
         }
+
     }
 
     @Override

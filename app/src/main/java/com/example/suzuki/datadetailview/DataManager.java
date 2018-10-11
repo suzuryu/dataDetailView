@@ -2,6 +2,7 @@ package com.example.suzuki.datadetailview;
 
 import android.app.Activity;
 import android.content.Context;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -16,21 +17,33 @@ import java.util.ArrayList;
 
 public class DataManager{
     private String textData;
-    private String PACKAGE_NAME = "com.example.suzuki.datadetailview/";
+    //private String PACKAGE_NAME = "com.example.suzuki.datadetailview/";
     private Context context;
+    private ArrayList<String> fileNames;
 
     DataManager(Context context){
         this.textData = "TEST";
         this.context = context;
+        this.fileNames = new ArrayList<>();
     }
 
-    public String convertFileName(String fileNameOrigin){
-        return "/data/data/" + PACKAGE_NAME  + fileNameOrigin;
+    public void addFileName(String fileName){
+        if (!this.fileNames.contains(fileName)) {
+            this.fileNames.add(fileName);
+        }
+    }
+
+    public ArrayList<String> getFileNames(){
+        return this.fileNames;
+    }
+
+    public String getFilePath(String fileName){
+        return this.context.getFilesDir().getPath() + File.separator  + fileName;
     }
 
     public FileInputStream getLocalInputFileStream(String fileName){
         try{
-            return context.openFileInput(fileName);
+            return new FileInputStream(new File(getFilePath(fileName)));
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -39,7 +52,7 @@ public class DataManager{
     }
 
     public void writeToFile(String fileName, String text) {
-        try (FileOutputStream outputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE)){
+        try (FileOutputStream outputStream = new FileOutputStream(new File(getFilePath(fileName)))){
             outputStream.write(text.getBytes());
             outputStream.flush();
             outputStream.close();
@@ -50,6 +63,7 @@ public class DataManager{
 
     public ArrayList<String> readFromFile(String fileName) {
         try {
+
             FileInputStream inputStream = getLocalInputFileStream(fileName);
             BufferedReader bfReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
 
