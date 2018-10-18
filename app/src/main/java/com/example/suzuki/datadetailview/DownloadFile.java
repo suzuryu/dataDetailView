@@ -14,11 +14,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.CountDownLatch;
 
 import static android.content.ContentValues.TAG;
 import static android.provider.ContactsContract.Directory.PACKAGE_NAME;
@@ -30,16 +32,18 @@ public class DownloadFile extends AsyncTask<String, String, String> {
     private boolean isDownloaded;
     private Context mainActivity;
     private DataManager dataManager;
+    private CountDownLatch cdLatch;
 
     /**
      * Before starting background thread
      * Show Progress Bar Dialog
      */
 
-    DownloadFile(Context mainActivity, DataManager dataManager){
+    DownloadFile(Context mainActivity, DataManager dataManager,CountDownLatch latch){
         super();
         this.dataManager = dataManager;
         this.mainActivity = mainActivity;
+        this.cdLatch = latch;
     }
 
     @Override
@@ -50,7 +54,8 @@ public class DownloadFile extends AsyncTask<String, String, String> {
         this.progressDialog.setCancelable(false);
         this.progressDialog.show();
     }
-    @Override
+
+   @Override
     public String doInBackground(String... f_url) {
         int count;
         try{
@@ -64,10 +69,7 @@ public class DownloadFile extends AsyncTask<String, String, String> {
             //Extract file name from URL
             fileName = f_url[0].substring(f_url[0].lastIndexOf('/') + 1, f_url[0].length());
 
-            this.dataManager.addFileName(fileName);
             //External directory path to save file
-            // folder = Environment.getExternalStorageDirectory() + File.separator + "androiddeft/";
-            // folder = "/data/data/com.example.suzuki.datadetailview/" + File.separator + "androiddeft/";
             folder = this.mainActivity.getFilesDir().getPath() + File.separator + "androiddeft/";
 
             //Create androiddeft folder if it does not exist
@@ -79,6 +81,8 @@ public class DownloadFile extends AsyncTask<String, String, String> {
 
             // Output stream to write file
             OutputStream output = new  FileOutputStream(folder + fileName);
+            //OutputStreamWriter outputStreamWriter = new OutputStreamWriter(output, "UTF-8")
+            this.dataManager.addFileName(fileName);
 
             byte data[] = new byte[1024];
 
@@ -86,21 +90,21 @@ public class DownloadFile extends AsyncTask<String, String, String> {
 
             while ((count = input.read(data)) != -1) {
                 total += count;
-//                 publishing the progress....
-//                 After this onProgressUpdate will be called
-                publishProgress("" + (int) ((total * 100) / lengthOfFile));
-               // Log.d(TAG, "Progress: " + (int) ((total * 100) / lengthOfFile));
 
-                // writing data to file
+                publishProgress("" + (int) ((total * 100) / lengthOfFile));
+                Log.d(TAG, "Progress: " + (int) ((total * 100) / lengthOfFile));
+
                 output.write(data, 0, count);
             }
 
-            // flushing output
             output.flush();
 
             // closing streams
             output.close();
             input.close();
+
+            this.cdLatch.countDown();
+
             return "Downloaded at: " + folder + fileName;
 
         } catch (Exception e) {

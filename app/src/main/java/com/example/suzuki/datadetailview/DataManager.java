@@ -38,12 +38,12 @@ public class DataManager{
     }
 
     public String getFilePath(String fileName){
-        return this.context.getFilesDir().getPath() + File.separator  + fileName;
+        return this.context.getFilesDir().getPath() + File.separator + "androiddeft/"  + fileName;
     }
 
     public FileInputStream getLocalInputFileStream(String fileName){
         try{
-            return new FileInputStream(new File(getFilePath(fileName)));
+            return new FileInputStream(this.getFilePath(fileName));
         }catch (IOException e){
             e.printStackTrace();
         }

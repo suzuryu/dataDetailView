@@ -19,7 +19,7 @@ public class Prefecture {
     private String herePrefecture;
 
     Prefecture(){
-
+        this.herePrefecture = "";
     }
 
     Prefecture(String prefec){

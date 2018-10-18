@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
 
 public class ScrollingActivity extends AppCompatActivity {
 
@@ -84,16 +85,19 @@ public class ScrollingActivity extends AppCompatActivity {
     private void downloadData() {
         try {
             String url = "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000031543954&fileKind=0";
-            //Intent browserIntent =
-            //startActivity(browserIntent);
-            new DownloadFile(this, this.dataManager).execute(url);
+            CountDownLatch countDownLatch = new CountDownLatch(1);
 
+            new DownloadFile(this, this.dataManager, countDownLatch
+            ).execute(url);
+
+            countDownLatch.await();
+            Log.d("download", "downloaded");
             for(String name: this.dataManager.getFileNames()){
                 Log.d("name", name);
             }
 
             ReadSchoolData readSchoolData = new ReadSchoolData(this.dataManager);
-
+            readSchoolData.readFromCsv(this.dataManager.getFileNames().get(0));
         }catch (Exception e){
             e.printStackTrace();
         }
