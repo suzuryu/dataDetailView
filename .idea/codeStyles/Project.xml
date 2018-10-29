@@ -1,5 +1,8 @@
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
+    <CsvCodeStyleSettings>
+      <option name="ENABLE_WIDE_CHARACTER_DETECTION" value="true" />
+    </CsvCodeStyleSettings>
     <Objective-C-extensions>
       <file>
         <option name="com.jetbrains.cidr.lang.util.OCDeclarationKind" value="Import" />

@@ -14,17 +14,21 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.HashMap;
 
 public class DataManager{
     private String textData;
     //private String PACKAGE_NAME = "com.example.suzuki.datadetailview/";
     private Context context;
     private ArrayList<String> fileNames;
+    private HashMap<String, TownData> townData;
 
     DataManager(Context context){
         this.textData = "TEST";
         this.context = context;
         this.fileNames = new ArrayList<>();
+        this.townData = new HashMap<>();
     }
 
     public void addFileName(String fileName){
@@ -49,6 +53,10 @@ public class DataManager{
         }
 
         return null;
+    }
+
+    public Context getContext() {
+        return context;
     }
 
     public void writeToFile(String fileName, String text) {
@@ -88,4 +96,9 @@ public class DataManager{
     public String getTextData(){
         return this.textData;
     }
+
+    public HashMap<String, TownData> getTownData() {
+        return townData;
+    }
+
 }

@@ -3,7 +3,7 @@ package com.example.suzuki.datadetailview;
 import java.util.Arrays;
 
 public class Prefecture {
-    private static String[] PREFUCTURE_LIST = {
+    public static String[] PREFUCTURE_LIST = {
             "北海道", "青森県","秋田県","岩手県","山形県",
             "宮城県","福島県","群馬県","栃木県","茨城県",
             "千葉県","埼玉県","東京都","神奈川県","山梨県",

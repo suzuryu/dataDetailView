@@ -13,15 +13,18 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.fasterxml.jackson.databind.JsonNode;
 
+import java.io.File;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
 
 public class ScrollingActivity extends AppCompatActivity {
 
     private DataManager dataManager;
+    private SQLiteManager DBManager;
 
-    private void addData2View(TownData townData){
+    private void addData2View(String[] data){
         LinearLayout linearLayout = (LinearLayout)findViewById(R.id.linear);
 
         int margin_size = 10;
@@ -38,7 +41,7 @@ public class ScrollingActivity extends AppCompatActivity {
         vert_linear.setLayoutParams(layoutParams);
         vert_linear.setGravity(Gravity.CENTER);
 
-        data_text.setText(townData.getData_name_() + " : " + townData.getData_val_());
+        data_text.setText(data[0] + " : " + data[1]);
         data_text.setTextSize(32);
         data_text.setGravity(Gravity.CENTER);
 
@@ -46,16 +49,11 @@ public class ScrollingActivity extends AppCompatActivity {
         linearLayout.addView(vert_linear);
     }
 
-    private void createDataView(){
+    private void createDataView(String city_str){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        // 市区町村名を入れる
-        /*
-            我期待以下
-            String title_str = dataAnalyzer.getlocationName();
-         */
-        String title_str = "神戸";
-        toolbar.setTitle(title_str);
+//        TownData townData = this.dataManager.getTownData().get(city_str);
+        TownData townData = DBManager.queryByCityName(city_str);
+        toolbar.setTitle(townData.getPrefecture() + city_str);
 
         //setSupportActionBar(toolbar);
 
@@ -64,40 +62,32 @@ public class ScrollingActivity extends AppCompatActivity {
         /*
           Data setting
          */
-        TownData datas[] = new TownData[10];
+        String datas[][] = new String[4][2];
         for(int i=0; i < datas.length; i++){
-            datas[i] = new TownData();
+            datas[i][0] = "";
+            datas[i][1] = "";
         }
-        datas[0].setData_name_("平均気温");
-        datas[1].setData_name_("人口");
-        datas[2].setData_name_("人口密度");
 
-        datas[0].setData_val_(String.valueOf(16.7) + "℃");
-        datas[1].setData_val_(String.valueOf(1527481) + "人");
-        datas[2].setData_val_(String.valueOf(2742) + "人/㎢");
+        datas[0][0] = "学校の数";
+        datas[1][0] = "駅の数";
+        datas[2][0] = "犯罪発生率";
+        datas[3][0] = "人口";
+
+        datas[0][1] = String.valueOf(townData.getSchool_num()) + "つ";
+        datas[1][1] = String.valueOf(townData.getStation_num()) + "つ";
+        datas[2][1] = String.valueOf(townData.getCrime_per()) + "%";
+        datas[3][1] = String.valueOf(townData.getPeople_num()) + "人";
 
         // add data to view list
-        for(TownData townData: datas){
-            addData2View(townData);
+        for(String[] data: datas){
+            addData2View(data);
         }
     }
 
     private void downloadData() {
         try {
-            String url = "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000031543954&fileKind=0";
-            CountDownLatch countDownLatch = new CountDownLatch(1);
-
-            new DownloadFile(this, this.dataManager, countDownLatch
-            ).execute(url);
-
-            countDownLatch.await();
-            Log.d("download", "downloaded");
-            for(String name: this.dataManager.getFileNames()){
-                Log.d("name", name);
-            }
-
-            ReadSchoolData readSchoolData = new ReadSchoolData(this.dataManager);
-            readSchoolData.readFromCsv(this.dataManager.getFileNames().get(0));
+            JsonHelper jsonHelper = new JsonHelper(this.dataManager, this.DBManager);
+            jsonHelper.readJson(this.getAssets().open("cityData.json"));
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -108,8 +98,10 @@ public class ScrollingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.dataManager = new DataManager(this);
-        setScreenMain();
+        this.DBManager = new SQLiteManager(this);
+
         downloadData();
+        setScreenMain();
     }
 
     @Override
@@ -121,7 +113,7 @@ public class ScrollingActivity extends AppCompatActivity {
 
     private void setScreenMain() {
         setContentView(R.layout.activity_scrolling);
-        createDataView();
+        createDataView("町田市");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
