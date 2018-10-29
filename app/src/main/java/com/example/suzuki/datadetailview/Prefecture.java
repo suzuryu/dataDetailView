@@ -1,7 +1,5 @@
 package com.example.suzuki.datadetailview;
 
-import java.util.Arrays;
-
 public class Prefecture {
     public static String[] PREFUCTURE_LIST = {
             "北海道", "青森県","秋田県","岩手県","山形県",
@@ -15,22 +13,4 @@ public class Prefecture {
             "福岡県","佐賀県","長崎県","熊本県","宮崎県",
             "鹿児島県", "沖縄県"
     };
-
-    private String herePrefecture;
-
-    Prefecture(){
-        this.herePrefecture = "";
-    }
-
-    Prefecture(String prefec){
-        this.herePrefecture = prefec;
-    }
-
-    public String getHerePrefecture() {
-        return herePrefecture;
-    }
-
-    public static boolean isPrefucture(String placeName){
-        return Arrays.asList(PREFUCTURE_LIST).contains(placeName);
-    }
 }

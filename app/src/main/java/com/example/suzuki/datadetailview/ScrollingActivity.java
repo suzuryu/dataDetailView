@@ -5,7 +5,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.transition.Slide;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Menu;
@@ -13,17 +12,13 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.fasterxml.jackson.databind.JsonNode;
-
-import java.io.File;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 
 public class ScrollingActivity extends AppCompatActivity {
 
     private DataManager dataManager;
     private SQLiteManager DBManager;
 
+    // ひとつひとつのテーブルデータをレイアウトに追加していく
     private void addData2View(String[] data){
         LinearLayout linearLayout = (LinearLayout)findViewById(R.id.linear);
 
@@ -49,13 +44,11 @@ public class ScrollingActivity extends AppCompatActivity {
         linearLayout.addView(vert_linear);
     }
 
+    //　テーブルデータの内容を設定
     private void createDataView(String city_str){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        TownData townData = this.dataManager.getTownData().get(city_str);
         TownData townData = DBManager.queryByCityName(city_str);
-        toolbar.setTitle(townData.getPrefecture() + city_str);
-
-        //setSupportActionBar(toolbar);
+        toolbar.setTitle(townData.getPrefecture() + townData.getCityName());
 
         getWindow().setExitTransition(new Slide());
 
@@ -73,10 +66,10 @@ public class ScrollingActivity extends AppCompatActivity {
         datas[2][0] = "犯罪発生率";
         datas[3][0] = "人口";
 
-        datas[0][1] = String.valueOf(townData.getSchool_num()) + "つ";
-        datas[1][1] = String.valueOf(townData.getStation_num()) + "つ";
-        datas[2][1] = String.valueOf(townData.getCrime_per()) + "%";
-        datas[3][1] = String.valueOf(townData.getPeople_num()) + "人";
+        datas[0][1] = String.valueOf(townData.getSchoolCount()) + "つ";
+        datas[1][1] = String.valueOf(townData.getStationCount()) + "つ";
+        datas[2][1] = String.valueOf(townData.getCrimePer()) + "%";
+        datas[3][1] = String.valueOf(townData.getPopulation()) + "人";
 
         // add data to view list
         for(String[] data: datas){
@@ -86,7 +79,7 @@ public class ScrollingActivity extends AppCompatActivity {
 
     private void downloadData() {
         try {
-            JsonHelper jsonHelper = new JsonHelper(this.dataManager, this.DBManager);
+            JsonHelper jsonHelper = new JsonHelper(this.DBManager);
             jsonHelper.readJson(this.getAssets().open("cityData.json"));
         }catch (Exception e){
             e.printStackTrace();
@@ -97,7 +90,7 @@ public class ScrollingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.dataManager = new DataManager(this);
+        this.dataManager = new DataManager();
         this.DBManager = new SQLiteManager(this);
 
         downloadData();
@@ -113,7 +106,7 @@ public class ScrollingActivity extends AppCompatActivity {
 
     private void setScreenMain() {
         setContentView(R.layout.activity_scrolling);
-        createDataView("町田市");
+        createDataView("八王子市");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -128,16 +121,7 @@ public class ScrollingActivity extends AppCompatActivity {
         setContentView(R.layout.test);
 
         Button senniButton = findViewById(R.id.seni);
-        DataManager textDataManager = new DataManager(this);
-        textDataManager.writeToFile("test.txt", textDataManager.getTextData());
-        ArrayList<String> fileData = textDataManager.readFromFile("test.txt");
-        String data = "";
-        for(String fileD: fileData){
-            data += fileD;
-        }
-        Log.d("data",data);
-        TextView textView = findViewById(R.id.textView);
-        textView.setText(data);
+
         senniButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
