@@ -14,8 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class ScrollingActivity extends AppCompatActivity {
-
-    private DataManager dataManager;
     private SQLiteManager DBManager;
 
     // ひとつひとつのテーブルデータをレイアウトに追加していく
@@ -90,7 +88,6 @@ public class ScrollingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.dataManager = new DataManager();
         this.DBManager = new SQLiteManager(this);
 
         downloadData();
