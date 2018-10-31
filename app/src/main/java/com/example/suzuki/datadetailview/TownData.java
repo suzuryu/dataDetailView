@@ -9,22 +9,24 @@ public class TownData
     private Double  crimePer;
     private int     population;
 
-    public void setPopulation(int population) {
-        this.population = population;
-    }
-
-    public int getPopulation() {
-
-        return population;
-    }
-
     TownData(){
         this.cityName = "NO NAME";
+        this.schoolCount = 0;
+        this.prefecture = "NO PREFECTURE";
+        this.stationCount = 0;
+        this.crimePer = 0.0;
+        this.population = 0;
     }
 
     public String getCityName() {
         return cityName;
     }
+
+    public void setPopulation(int population) {
+        this.population = population;
+    }
+
+    public int getPopulation() { return population; }
 
     public void setCityName(String cityName) {
         this.cityName = cityName;

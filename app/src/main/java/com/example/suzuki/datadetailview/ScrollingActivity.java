@@ -17,19 +17,30 @@ public class ScrollingActivity extends AppCompatActivity {
     private SQLiteManager DBManager;
 
     // ひとつひとつのテーブルデータをレイアウトに追加していく
-    private void addData2View(String[] data){
+    private void addData2View(String[][] datas, int index){
+        String[] data = datas[index];
         LinearLayout linearLayout = (LinearLayout)findViewById(R.id.linear);
 
         int margin_size = 10;
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(margin_size, margin_size, margin_size, 0);
-
         int padding_size = 20;
-
         TextView data_text = new TextView(this);
         LinearLayout vert_linear = new LinearLayout(this);
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        if(index == 0){
+            layoutParams.setMargins(margin_size, margin_size, margin_size, 0);
+            vert_linear.setBackground(getDrawable(R.drawable.shape_rounded_top_corner));
+        }else if(index == datas.length - 1){
+            layoutParams.setMargins(margin_size, 0, margin_size, margin_size);
+            vert_linear.setBackground(getDrawable(R.drawable.shape_rounded_bottom_corner));
+        }
+        else {
+            layoutParams.setMargins(margin_size, 0, margin_size, 0);
+            vert_linear.setBackground(getDrawable(R.drawable.fradme_style));
+        }
+
         vert_linear.setOrientation(LinearLayout.HORIZONTAL);
-        vert_linear.setBackground(getDrawable(R.drawable.fradme_style));
         vert_linear.setPadding(padding_size, padding_size, padding_size, padding_size);
         vert_linear.setLayoutParams(layoutParams);
         vert_linear.setGravity(Gravity.CENTER);
@@ -70,8 +81,8 @@ public class ScrollingActivity extends AppCompatActivity {
         datas[3][1] = String.valueOf(townData.getPopulation()) + "人";
 
         // add data to view list
-        for(String[] data: datas){
-            addData2View(data);
+        for(int i=0;i<datas.length;i++){
+            addData2View(datas,i);
         }
     }
 
